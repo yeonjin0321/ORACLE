@@ -1,0 +1,2 @@
+COUNT(EMPNO)
+1

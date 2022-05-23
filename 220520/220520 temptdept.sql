@@ -1,0 +1,3 @@
+SELECT * FROM temp
+
+SELECT * FROM tdept

@@ -1,0 +1,4 @@
+MEM_NO,MEM_ID,MEM_PW,MEM_NAME
+1,apple,123,애플
+2,tomato,123,토마토
+3,banana,123,바나나
