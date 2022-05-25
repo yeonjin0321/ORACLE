@@ -130,6 +130,10 @@ FROM
 WHERE
 ORDER BY
   
+index가 존재하는 칼럼은 테이블 억세스 없이 출력이 가능하다.
+order by 없이 정렬할 수 있다면, 검색 속도를 높일 수 있다.
+
+
 SELECT 
     /*+ index_desc(emp pk_emp)*/ empno
  
@@ -139,6 +143,26 @@ SELECT
 -- 테이블에서 pk는 인덱스가 제공된다.
 --인덱스가 있는 컬럼은 테이블 access없이 출력가능하다.
 
+SELECT ROWID RNO FROM EMP --18자리 출력
+
+SELECT ENAME,DEPTNO, JOB FROM EMP
+WHERE ROWID = 'AAARE8AAEAAAACTAAC'
+
+DBMS가 가지고 있는 모든 데이터의 각각의 고유한 식별자이다.
+index테이블은 index key와 rowid로 구성됨.
+실제로 존재하지 않으며, index 테이블 내에 있는 rowid는
+해당 데이터를 찾기 위한 하나의 논리적인 정보이다.
+1)6자리 : 데이터 오브젝트 번호
+2)3자리 : 상대적인 파일 번호
+3)6자리 : 블록번호
+4)3자리 : 블록 내의 행 번호
+
+rownum
+
+SELECT ROWNUM,EMPNO FROM EMP
+
+SELECT ROWNUM,EMPNO FROM EMP
+WHERE DEPTNO = 30
 
     
 SELECT ENAME FROM EMP;
@@ -174,3 +198,65 @@ ORDER BY EMP_ID
 8. 사원번호로 ORDERBY하기.
 
 SELECT emp_id, emp_name FROM temp ORDER BY EMP_ID ;
+
+
+--GROUP BY절
+
+우리 회사에 근무하는 사원들에 대헤서 부서별 사원수를 출력하고 싶다. 어떡하지?
+
+사원집합-> FK -DEPTNO
+FK는 중복이 허락된다.
+인덱스를 제공하지 않는다.
+FK는 릴레이션이다.(1:N 관계형태)
+
+SELECT EMPNO
+ FROM EMP
+GROUP BY DNAME
+
+SELECT DEPTNO
+ FROM EMP
+GROUP BY DEPTNO
+
+SELECT EMPNO
+ FROM EMP
+GROUP BY EMPNO
+
+
+SELECT COUNT(EMPNO)
+ FROM EMP
+GROUP BY DEPTNO
+
+
+SELECT DEPTNO, COUNT(EMPNO)-- 부서번호, 사원번호(합계)
+ FROM EMP
+GROUP BY DEPTNO
+
+
+그룹함수- AVG, COUNT, MAX, MIN, SUM
+
+테이블 전체 데이터에서 통계적인 결과를 얻기 위해서 행 집합에
+적용하여 하나의 결과를 생산함.
+
+일반컴럼과 그룹함수가 같이 올 수 있나?
+없다.
+
+SELECT SUM(SAL) FROM EMP
+
+SELECT SUM(SAL),ENAME FROM EMP
+
+--문법적인 문제는 해결했지만, 의미가 없다.
+SELECT SUM(SAL), MAX(ENAME) FROM EMP
+
+--부서별로 합계
+SELECT SUM(SAL) FROM EMP
+GROUP BY DEPTNO
+
+--GROUP BY에 사용한 컬럼명은 SELECT 다음에 사용했을떄 의미가 있다.
+--부서별로 ~하다는 뜻.
+
+SELECT SUM(SAL),DEPTNO FROM EMP
+GROUP BY DEPTNO
+
+SELECT MAX(SAL),AVG(SAL),DEPTNO FROM EMP
+GROUP BY DEPTNO
+
